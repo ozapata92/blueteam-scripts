@@ -6,6 +6,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+/scan_events
 
 # C extensions
 *.so

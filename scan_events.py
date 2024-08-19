@@ -1,11 +1,12 @@
 import win32evtlog
 from colorama import Fore, Style, init
 import time
+from tkinter import messagebox
 
 
 class WindowsEventLogReader:
     def __init__(self):
-        self.eventos = {
+        self.events = {
             "Create Services": [7030, 7045],
             # "Command Line Auditing": [4688],
             "Create User": [4720, 4722, 4724, 4728],
@@ -43,16 +44,14 @@ class WindowsEventLogReader:
             win32evtlog.CloseEventLog(self.hand)
 
     def read_events(self):
-        init(autoreset=True)  # Inicializar colorama
-
         while True:
             events = win32evtlog.ReadEventLog(self.hand, win32evtlog.EVENTLOG_BACKWARDS_READ | win32evtlog.EVENTLOG_SEQUENTIAL_READ, 0)
             if events:
                 for event in events:
-                    for tipo, ids in self.eventos.items():
+                    for tipo, ids in self.events.items():
                         if event.EventID in ids:
-                            print(f"Tipo de Evento: {Fore.BLUE}{tipo}{Style.RESET_ALL}, ID: {Fore.RED}{event.EventID}{Style.RESET_ALL}, Hora: {Fore.GREEN}{event.TimeGenerated}{Style.RESET_ALL}")
-                            time.sleep(0.5)  # Agregar un timeout de 0.5 segundos entre eventos
+                            messagebox.showinfo(f"Tipo de Evento: {tipo}", f"ID: {event.EventID}, Hora: {event.TimeGenerated}")
+                            time.sleep(0.5)  # Agregar un timeout de 0.5 segundos entre events
 
 if __name__ == "__main__":
     event_log_reader = WindowsEventLogReader()
